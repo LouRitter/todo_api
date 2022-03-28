@@ -7,4 +7,6 @@ class User < ApplicationRecord
   if: -> { new_record? || !password.nil? }
 
   has_many :tasks, dependent: :destroy
+
+
 end

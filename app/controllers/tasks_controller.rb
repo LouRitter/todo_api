@@ -3,23 +3,12 @@ class TasksController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :not_found
 
   def index
-    @tasks = @current_user.tasks.where(user_id: @current_user.id)
-    render json: @tasks
-  end
-
-  def uncompleted
-    @tasks = @current_user.tasks.where(completed: false)
-    render json: @tasks
-  end
-
-  def completed
-    @tasks = @current_user.tasks.where(completed: true)
-    render json: @tasks
+    @tasks = Task.filter(filtering_(params))
+    render json: @tasks, status: 200
   end
 
   def show
     @task = @current_user.tasks.find(params[:id])
-
     render json: @task
   end
 
@@ -61,5 +50,10 @@ class TasksController < ApplicationController
   def task_params
     params.permit(:title, :completed, :notes)
   end
+
+  def filtering_(params)
+    params.slice(:title, :start_date, :end_date, :completed)
+  end
+
 
 end
